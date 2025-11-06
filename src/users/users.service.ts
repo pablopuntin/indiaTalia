@@ -1,26 +1,60 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
+import { Role } from './entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
+  ) {}
+
+  async create(createUserDto: CreateUserDto) {
+    const { email, password, clerkId } = createUserDto;
+
+    const existing = await this.userRepository.findOne({ where: { email } });
+    if (existing) throw new BadRequestException('Email already exists');
+
+    const defaultRole = await this.roleRepository.findOne({ where: { name: 'user' } });
+    if (!defaultRole) throw new BadRequestException('Default role "user" not found');
+
+    const user = this.userRepository.create({
+      email,
+      password,
+      clerkId,
+      roles: [defaultRole],
+    });
+
+    return this.userRepository.save(user);
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findByEmail(email: string) {
+    return this.userRepository.findOne({ where: { email } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  async findAll() {
+  return this.userRepository.find();
+}
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+async findOne(id: string) {
+  return this.userRepository.findOne({ where: { id } });
+}
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
+async update(id: string, updateUserDto: any) {
+  await this.userRepository.update(id, updateUserDto);
+  return this.findOne(id);
+}
+
+async remove(id: string) {
+  const user = await this.findOne(id);
+  if (!user) throw new Error('User not found');
+  return this.userRepository.remove(user);
+}
+
 }
