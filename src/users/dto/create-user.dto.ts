@@ -1,5 +1,6 @@
 import { IsEmail, ValidateIf, IsNotEmpty, Validate, IsOptional } from 'class-validator';
 import { PasswordOrClerkId } from 'src/common/validators/password-or-clerkId.validator';
+import { Role } from '../entities/role.entity';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -11,6 +12,9 @@ export class CreateUserDto {
   @ValidateIf(o => !o.clerkId)
   @IsOptional()
   password?: string;
+
+    @IsOptional()
+  role?: Role;
 
   @ValidateIf(o => !o.password)
   @IsNotEmpty({ message: 'clerkId is required if no password is provided' })

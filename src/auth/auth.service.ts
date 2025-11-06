@@ -4,39 +4,39 @@ import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Role } from 'src/users/entities/role.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
+    @InjectRepository(Role)
+    private readonly rolesRepository: Repository<Role>,
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(registerDto: RegisterDto) {
-    const { email, password } = registerDto;
+  // AuthService.register()
+async register(registerDto: RegisterDto) {
+  const { email, password, name } = registerDto;
 
-    // 1️⃣ Verificamos si el usuario ya existe
-    const existingUser = await this.usersService.findByEmail(email);
-    if (existingUser) {
-      throw new BadRequestException('Email already registered');
-    }
+  if (!name) throw new BadRequestException('El nombre del usuario es requerido');
 
-    // 2️⃣ Hasheamos el password
-    const hashedPassword = await bcrypt.hash(password, 10);
+  // Hashear password
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 3️⃣ Creamos el usuario con rol por defecto (user)
-    const user = await this.usersService.create({
-        name: registerDto.name,
-      email,
-      password: hashedPassword,
-        authMethodCheck: true,
-    });
+  // Crear usuario (UsersService ya maneja el rol user)
+  await this.usersService.create({
+    name,
+    email,
+    password: hashedPassword,
+    authMethodCheck: true,
+  });
 
-    // 4️⃣ Devolvemos una respuesta simple
-    return {
-      message: 'User registered successfully',
-         };
-  }
+  return { message: 'Usuario registrado con éxito' };
+}
+
 
   async login (loginDto:LoginDto){
     const {email, password} = loginDto;
