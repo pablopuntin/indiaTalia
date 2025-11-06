@@ -2,6 +2,9 @@ import { IsEmail, ValidateIf, IsNotEmpty, Validate, IsOptional } from 'class-val
 import { PasswordOrClerkId } from 'src/common/validators/password-or-clerkId.validator';
 
 export class CreateUserDto {
+  @IsNotEmpty()
+  name: string;
+  
   @IsEmail({}, { message: 'Email must be valid' })
   email: string;
 
