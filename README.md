@@ -1,98 +1,396 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+  <img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" />
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+<h1 align="center">🌸 INDIA TALIA — BACKEND SYSTEM</h1>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
+<p align="center">
+  <i>Gestión integral de ventas, stock y finanzas — Potenciado con NestJS + TypeORM</i>
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+<p align="center">
+  <a href="https://nestjs.com" target="_blank"><img src="https://img.shields.io/badge/NestJS-v10-DD0031?logo=nestjs&logoColor=white" /></a>
+  <a href="https://www.typescriptlang.org/" target="_blank"><img src="https://img.shields.io/badge/TypeScript-v5-3178C6?logo=typescript&logoColor=white" /></a>
+  <a href="https://typeorm.io/" target="_blank"><img src="https://img.shields.io/badge/TypeORM-DataMapper-F29111?logo=database&logoColor=white" /></a>
+  <a href="#" target="_blank"><img src="https://img.shields.io/badge/License-MIT-28A745?logo=open-source-initiative&logoColor=white" /></a>
+</p>
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+ENTIDADES
+•  👤 User (Usuario)
+•  🔐 Role (Rol)
+•  🏷️ Category (Categoría)
+•  🏭 Supplier (Proveedor)
+•  📦 ProductBase (Producto base)
+•  🌈 ProductVariant (Variante de producto)	
+•  🖼️ ProductImage (Imagen del producto)
+•  🛒 Cart (Carrito)
+•  🧺 CartItem (Ítem del carrito)
+•  🧾 Order (Pedido)
+•  📦 OrderItem (Ítem del pedido)
+•  💳 Payment (Pago)
+•  💰 CashMovement (Movimiento de caja)
+•  🏦 CashRegister (Caja diaria)
+•  💸 FixedExpense / VariableExpense (Gasto fijo / variable)
+•  📈 PriceRule / PriceChangeHistory (Regla de precios / Historial de cambios)
+•  📦 StockMovement (Movimiento de stock)
 
-```bash
-$ npm install
-```
+Flujo de trabajo
+# Documentación Completa del Sistema India Talia
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+## ⚙️ FLUJO DE TRABAJO DETALLADO (WORKFLOW)
 
-# watch mode
-$ npm run start:dev
+### 1️⃣ Usuario y autenticación
+- Un `User` se registra con un `Role` (rol) determinado: superAdmin o user (empleado).
+- El rol determina permisos sobre módulos y rutas:
+  - `superAdmin`: acceso total a todas las funcionalidades.
+  - `user` (empleado): acceso limitado, sin permiso para métricas financieras ni movimientos de caja (`CashMovement`), ni otras áreas sensibles.
 
-# production mode
-$ npm run start:prod
-```
 
-## Run tests
+### 2️⃣ Productos y catálogo
+- `Category` agrupa `ProductBase` (familias de productos).
+- Cada `ProductBase` tiene varias `ProductVariant` (fragancias, tamaños, colores...).
+- Las variantes tienen `ProductImage`, precios propios y stock individual.
 
-```bash
-# unit tests
-$ npm run test
+### 3️⃣ Carrito de compras (Cart)
+- Cada `User` tiene su propio `Cart`.
+- El `Cart` contiene muchos `CartItem`, cada uno apuntando a un `ProductVariant`.
+- El carrito calcula subtotales y totales en base a `salePrice`.
 
-# e2e tests
-$ npm run test:e2e
+### 4️⃣ Pedido (Order)
+- Al confirmar el carrito, se genera un `Order` con `OrderItem`s (copiados desde el carrito).
+- `Order` registra `status` (pending, paid, cancelled...).
+- Cada `OrderItem` referencia un `ProductVariant` y guarda su `unitPrice`.
 
-# test coverage
-$ npm run test:cov
-```
+### 5️⃣ Pago (Payment)
+- Cada `Order` puede tener varios `Payment`s (efectivo, tarjeta, transferencia...).
+- Un `Payment` genera un `CashMovement` del tipo **entry (entrada)**.
+- La suma de los pagos debe igualar el `Order.total`.
 
-## Deployment
+### 6️⃣ Caja y movimientos (CashRegister & CashMovement)
+- Cada día, un `CashRegister` agrupa todos los `CashMovement` de ese día.
+- Los movimientos pueden provenir de:
+  - Ventas (`Order` / `Payment`)
+  - Gastos (`FixedExpense` / `VariableExpense`)
+  - Ajustes manuales o ingresos externos
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### 7️⃣ Stock
+- Cada `StockMovement` registra una entrada o salida de stock.
+- Asociado a:
+  - `Order` (salida por venta)
+  - `Supplier` (entrada por compra)
+  - `User` (responsable del movimiento)
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 8️⃣ Precios y trazabilidad
+- `PriceRule` define aumentos o descuentos automáticos por rango de fechas.
+- `PriceChangeHistory` guarda la trazabilidad de cada cambio de precio manual.
+- Ambos se asocian a `User` para saber quién realizó los cambios.
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+### 9️⃣ Reportes y análisis
+- Los módulos `reports/` y `cash/` permiten consolidar:
+  - Ventas por período
+  - Movimientos de caja
+  - Rentabilidad y control de stock
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 🔗 RELACIONES ENTRE ENTIDADES
 
-Check out a few resources that may come in handy when working with NestJS:
+### Usuario y Roles
+- `User` tiene un único `Role`.
+- El `Role` determina permisos sobre módulos y funcionalidades.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Productos y Catálogo
+- `Category` → tiene muchas `ProductBase`.
+- `ProductBase` → tiene muchas `ProductVariant`.
+- `ProductVariant` → tiene muchas `ProductImage`.
+- `ProductVariant` → tiene stock y precios propios.
 
-## Support
+### Carrito de compras
+- `User` → tiene un único `Cart`.
+- `Cart` → tiene muchos `CartItem`.
+- `CartItem` → referencia un único `ProductVariant`.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Pedido (Order)
+- `Order` → pertenece a un único `User`.
+- `Order` → tiene muchos `OrderItem`.
+- `OrderItem` → referencia un único `ProductVariant`.
 
-## Stay in touch
+### Pagos y Caja
+- `Order` → tiene muchos `Payment`.
+- `Payment` → genera un `CashMovement` de tipo entrada.
+- `CashRegister` → agrupa muchos `CashMovement` por día.
+- `CashMovement` puede ser:
+  - Entrada (ventas, pagos)
+  - Salida (gastos, ajustes)
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Stock
+- `StockMovement` → asociado a `Order` (salida), `Supplier` (entrada), y `User` (responsable).
+- Registra movimientos de inventario (entradas y salidas).
 
-## License
+### Precios y Trazabilidad
+- `PriceRule` → reglas automáticas de precio.
+- `PriceChangeHistory` → historial de cambios manuales.
+- Ambos asociados a `User` (quién hizo el cambio).
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
+
+## 🔗 RELACIONES M:N (MANY-TO-MANY) IMPLEMENTADAS CON ENTIDADES PUENTE
+
+| Relación conceptual       | Entidad puente           |
+|--------------------------|-------------------------|
+| Cart ↔ ProductVariant     | CartItem                |
+| Order ↔ ProductVariant    | OrderItem               |
+| Category ↔ PriceRule      | PriceRule con FK opcional|
+| ProductBase ↔ PriceRule   | PriceRule con FK opcional|
+| ProductVariant ↔ PriceRule| PriceRule con FK opcional|
+
+---
+
+## 🧩 ARQUITECTURA DE CARPETAS NESTJS (src/modules)
+
+```plaintext
+src/
+    auth/                # login, registro, roles
+    users/               # User + Role
+    categories/          # Category
+    suppliers/           # Supplier
+    products/            # ProductBase + ProductVariant + ProductImage
+    cart/                # Cart + CartItem
+    orders/              # Order + OrderItem
+    payments/            # Payment
+    cash/                # CashRegister + CashMovement
+    expenses/            # FixedExpense + VariableExpense
+    stock/               # StockMovement
+    price-rules/         # PriceRule
+    price-history/       # PriceChangeHistory
+    reports/             # Dashboards, KPIs, métricas
+    common/              # Utilidades, filtros, DTOs compartidos
+  config/
+  main.ts
+  app.module.ts
+
+  
+  ###Estructura completa
+  
+  src/
+  auth/
+    decorators/
+      roles.decorator.ts
+      user.decorator.ts
+    dto/
+      login.dto.ts
+      register.dto.ts
+    guards/  
+    auth.controller.ts
+    auth.service.ts
+    auth.module.ts
+    jwt.strategy.ts
+
+  users/
+    dto/
+      create-user.dto.ts
+      update-user.dto.ts
+    entities/
+      user.entity.ts
+      role.entity.ts        # si roles están separados aquí, o referenciados desde auth
+    users.controller.ts
+    users.service.ts
+    users.module.ts
+✅ Permite múltiples roles por usuario (sin cambiar nada en el futuro).
+✅ Puedes agregar roles dinámicamente en base de datos (sin tocar código).
+✅ AuthService puede validar roles con decorators (@Roles('superAdmin')).
+✅ UsersService sigue siendo reutilizable para otros proyectos.
+
+  categories/
+    dto/
+      create-category.dto.ts
+      update-category.dto.ts
+    entities/
+      category.entity.ts
+    categories.controller.ts
+    categories.service.ts
+    categories.module.ts
+
+  suppliers/
+    dto/
+      create-supplier.dto.ts
+      update-supplier.dto.ts
+    entities/
+      supplier.entity.ts
+    suppliers.controller.ts
+    suppliers.service.ts
+    suppliers.module.ts
+
+  products/
+    dto/
+      create-product.dto.ts
+      update-product.dto.ts
+    entities/
+      product-base.entity.ts
+      product-variant.entity.ts
+      product-image.entity.ts
+    products.controller.ts
+    products.service.ts
+    products.module.ts
+    variants/
+      dto/
+        create-variant.dto.ts
+        update-variant.dto.ts
+      entities/
+        product-variant.entity.ts      # o mantener solo aquí si prefieres separarlo
+        product-image.entity.ts
+      variants.service.ts
+      variants.controller.ts
+      variants.module.ts
+
+  cart/
+    dto/
+      add-cart-item.dto.ts
+      update-cart-item.dto.ts
+    entities/
+      cart.entity.ts
+      cart-item.entity.ts
+    cart.controller.ts
+    cart.service.ts
+    cart.module.ts
+
+  orders/
+    dto/
+      create-order.dto.ts
+      update-order.dto.ts
+    entities/
+      order.entity.ts
+      order-item.entity.ts
+    orders.controller.ts
+    orders.service.ts
+    orders.module.ts
+
+  payments/
+    dto/
+      create-payment.dto.ts
+      update-payment.dto.ts
+    entities/
+      payment.entity.ts
+    payments.controller.ts
+    payments.service.ts
+    payments.module.ts
+
+  cash/
+    dto/
+      create-cash-movement.dto.ts
+      update-cash-movement.dto.ts
+    entities/
+      cash-register.entity.ts
+      cash-movement.entity.ts
+    cash.controller.ts
+    cash.service.ts
+    cash.module.ts
+
+  expenses/
+    dto/
+      create-fixed-expense.dto.ts
+      create-variable-expense.dto.ts
+      update-expense.dto.ts
+    entities/
+      fixed-expense.entity.ts
+      variable-expense.entity.ts
+    expenses.controller.ts
+    expenses.service.ts
+    expenses.module.ts
+
+  stock/
+    dto/
+      create-stock-movement.dto.ts
+    entities/
+      stock-movement.entity.ts
+    stock.controller.ts
+    stock.service.ts
+    stock.module.ts
+
+  price-rules/
+    dto/
+      create-price-rule.dto.ts
+      update-price-rule.dto.ts
+    entities/
+      price-rule.entity.ts
+    price-rules.controller.ts
+    price-rules.service.ts
+    price-rules.module.ts
+
+  price-history/
+    dto/
+      create-price-change-history.dto.ts
+    entities/
+      price-change-history.entity.ts
+    price-history.controller.ts
+    price-history.service.ts
+    price-history.module.ts
+
+  reports/
+    dto/
+      report-filter.dto.ts
+    reports.controller.ts
+    reports.service.ts
+    reports.module.ts
+
+  common/
+    dto/
+      pagination.dto.ts
+      filters.dto.ts
+    filters/
+      roles.guard.ts
+      auth.guard.ts
+    pipes/
+      validation.pipe.ts
+    utils/
+      helpers.ts
+    decorators/
+      roles.decorator.ts
+
+  config/
+    app.config.ts
+    database.config.ts
+
+  main.ts
+  app.module.ts
+
+--
+
+   Créditos
+
+🧑‍💻 Desarrollador: Pablo
+🤖 Asistencia técnica: GPT-5
+🧱 Framework: NestJS
+💾 ORM: TypeORM
+💡 Lenguaje: TypeScript
+🚀 Estado: En evolución continua
+
+--
+
+Contacto
+
+📧 contacto@indiatalia.com
+
+🌐 Sitio web: próximamente
+📦 Repositorio: GitHub (en preparación)
+
+--
+
+11️⃣ Estructura Técnica y Módulos Futuros
+Estado	Módulo / Mejora	Descripción
+✅	Seeders automáticos	Carga inicial de roles, superadmin y datos base
+⚙️	Validators y Pipes	Validaciones personalizadas y tipadas
+🔒	Guards personalizados	Acceso por roles (@Roles('superAdmin'))
+🧩	Decoradores reutilizables	@User(), @Roles()
+📊	Reportes financieros avanzados	Métricas diarias, mensuales y comparativas
+🕵️	Historial de auditoría	Registro completo de acciones por usuario
+💰	Módulo de costos/rentabilidad	Análisis de margen y flujo neto
+⚡	CQRS + Event Sourcing	Escalabilidad reactiva (futuro)
+
+🌱 “India Talia Backend es más que un sistema —
+es un ecosistema modular donde cada línea de código cuenta una historia.”
+
