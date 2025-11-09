@@ -25,7 +25,7 @@ export class RegisterDto {
     email: string;
   
     @ApiProperty({
-      description: 'Supassword debe contener 8 caracteres, un numero y una mayuscula',
+      description: 'Su password debe contener 8 caracteres, un numero y una mayuscula',
       example: 'Prueba12',
       required: true
     })
