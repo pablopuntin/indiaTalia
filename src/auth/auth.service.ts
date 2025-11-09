@@ -17,18 +17,18 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  // AuthService.register()
+  // AuthService register()
 async register(registerDto: RegisterDto) {
-  const { email, password, name } = registerDto;
-
-  if (!name) throw new BadRequestException('El nombre del usuario es requerido');
+ const { email, password, firstname, lastname } = registerDto;
+  if (!firstname || !lastname) throw new BadRequestException('El nombre del usuario es requerido');
 
   // Hashear password
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // Crear usuario (UsersService ya maneja el rol user)
   await this.usersService.create({
-    name,
+    firstname,
+    lastname,
     email,
     password: hashedPassword,
     authMethodCheck: true,
@@ -54,7 +54,7 @@ async register(registerDto: RegisterDto) {
     }
 
     //generar token y firmarlo
-    const payload = {sub: user.id, name: user.name, roles: user.roles?.map(r => r.name) };
+    const payload = {sub: user.id, name: user.firstname, roles: user.roles?.map(r => r.name) };
     const token = this.jwtService.sign(payload);
   
 
@@ -63,7 +63,7 @@ async register(registerDto: RegisterDto) {
     access_token: token,
     user: {
       id: user.id,
-      name: user.name,
+      name: user.firstname,
       roles: user.roles
     },
   };
