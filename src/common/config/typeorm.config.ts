@@ -20,6 +20,6 @@ export const getTypeOrmConfig = (
     ssl: config.get('DATABASE_URL') ? { rejectUnauthorized: false } : false,
     autoLoadEntities: true,
     synchronize: true, //true borra todo - DESHABILITADO DESPUÉS DE CREAR TABLA
-    dropSchema: true // ⚠️ Nunca usar true en producción
+    dropSchema: false // ⚠️ Nunca usar true en producción
   };
 };

@@ -22,6 +22,7 @@ ENTIDADES
 •  🔐 Role (Rol)
 •  🏷️ Category (Categoría)
 •  🏭 Supplier (Proveedor)
+•  🏭 Brands (mARCAS)
 •  📦 ProductBase (Producto base)
 •  🌈 ProductVariant (Variante de producto)	
 •  🖼️ ProductImage (Imagen del producto)
@@ -51,7 +52,8 @@ Flujo de trabajo
 
 
 ### 2️⃣ Productos y catálogo
-- `Category` agrupa `ProductBase` (familias de productos).
+- `Category` agrupa muchos `brands`
+- cada `bands` agrupa muchos `ProductBase` (familias de productos).
 - Cada `ProductBase` tiene varias `ProductVariant` (fragancias, tamaños, colores...).
 - Las variantes tienen `ProductImage`, precios propios y stock individual.
 
@@ -104,7 +106,8 @@ Flujo de trabajo
 - El `Role` determina permisos sobre módulos y funcionalidades.
 
 ### Productos y Catálogo
-- `Category` → tiene muchas `ProductBase`.
+- `Category` → tiene muchas `brands`
+- `brands` tiene muchos `ProductBase`.
 - `ProductBase` → tiene muchas `ProductVariant`.
 - `ProductVariant` → tiene muchas `ProductImage`.
 - `ProductVariant` → tiene stock y precios propios.
@@ -157,6 +160,7 @@ src/
     auth/                # login, registro, roles
     users/               # User + Role
     categories/          # Category
+    brands/              # brand
     suppliers/           # Supplier
     products/            # ProductBase + ProductVariant + ProductImage
     cart/                # Cart + CartItem
@@ -225,7 +229,7 @@ src/
     suppliers.service.ts
     suppliers.module.ts
 
-  products/
+  productsBase/
     dto/
       create-product.dto.ts
       update-product.dto.ts
@@ -236,7 +240,7 @@ src/
     products.controller.ts
     products.service.ts
     products.module.ts
-    variants/
+  productVariants/
       dto/
         create-variant.dto.ts
         update-variant.dto.ts
