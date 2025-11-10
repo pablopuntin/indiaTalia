@@ -180,7 +180,7 @@ src/
   
   ###Estructura completa
   
-  src/
+src/
   auth/
     decorators/
       roles.decorator.ts
@@ -229,6 +229,16 @@ src/
     suppliers.service.ts
     suppliers.module.ts
 
+  brands/
+    dto/
+      create-brand.dto.ts
+      update-brand.dto.ts
+    entities/
+      brand.entity.ts
+    brand.controller.ts
+    brand.service.ts
+    brand.module.ts
+
   productsBase/
     dto/
       create-product.dto.ts
@@ -240,6 +250,7 @@ src/
     products.controller.ts
     products.service.ts
     products.module.ts
+    
   productVariants/
       dto/
         create-variant.dto.ts

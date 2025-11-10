@@ -7,8 +7,7 @@ export const getTypeOrmConfig = (
 ): TypeOrmModuleOptions => {
   // Console.log para debuguear los .env
   console.log('DB_USER:', config.get<string>('DB_USER'));
-  //console.log('DB_PASSWORD:', config.get<string>('DB_PASSWORD'));
-  //console.log('DB_HOST:', config.get<string>('DB_HOST'));
+ 
   return {
     type: 'postgres',
     url: config.get<string>('DATABASE_URL') || undefined,
@@ -20,6 +19,6 @@ export const getTypeOrmConfig = (
     ssl: config.get('DATABASE_URL') ? { rejectUnauthorized: false } : false,
     autoLoadEntities: true,
     synchronize: true, //true borra todo - DESHABILITADO DESPUÉS DE CREAR TABLA
-    dropSchema: false // ⚠️ Nunca usar true en producción
+    dropSchema: true // ⚠️ Nunca usar true en producción
   };
 };
