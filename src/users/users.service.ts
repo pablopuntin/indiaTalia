@@ -16,7 +16,7 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const { email, password, clerkId } = createUserDto;
+    const { email, password, firstname, lastname, clerkId } = createUserDto;
 
     const existing = await this.userRepository.findOne({ where: { email } });
     if (existing) throw new BadRequestException('Email already exists');
@@ -25,9 +25,11 @@ export class UsersService {
     if (!defaultRole) throw new BadRequestException('Default role "user" not found');
 
     const user = this.userRepository.create({
+      firstname,
+      lastname,
       email,
       password,
-      clerkId,
+      ...(clerkId && { clerkId }), // solo lo incluye si existe
       roles: [defaultRole],
     });
 

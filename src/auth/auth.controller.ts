@@ -4,9 +4,9 @@ import { LoginDto } from './dto/login.dto';
 import { AuthService } from './auth.service';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthSwagger } from './decorators/auth-swagger.decorator';
-import { JwtAuthGuard } from './guards/auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { Roles } from './decorators/roles.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -14,7 +14,7 @@ export class AuthController {
     constructor(private readonly authService: AuthService){} 
 
     @AuthSwagger()
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(AuthGuard('jwt'), RolesGuard)
     @Roles('superadmin')
     @Post('register')
     @ApiOperation({summary: 'registro de usuarios'})

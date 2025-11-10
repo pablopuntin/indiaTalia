@@ -8,12 +8,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-       secretOrKey: process.env.JWT_SECRET || 'default_secret', // Usualmente viene de .env
+      secretOrKey: process.env.JWT_SECRET || 'secret123',
     });
   }
 
   async validate(payload: any) {
-    // Este método se llama si el token es válido
-    return { userId: payload.sub, username: payload.username };
+    console.log('✅ [JwtStrategy] Token válido, payload:', payload);
+    return {
+      userId: payload.sub,
+      name: payload.name,
+      roles: payload.roles || [],
+    };
   }
 }
