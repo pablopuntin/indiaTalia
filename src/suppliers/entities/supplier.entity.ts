@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { SupplierProduct } from "./supplier-product.entity";
+import { ApiProperty } from "@nestjs/swagger";
 
 @Entity({ name: 'suppliers' })
 export class Supplier {
@@ -20,6 +21,13 @@ export class Supplier {
 
   @Column({ type: 'text', nullable: true })
   address?: string;
+
+  @ApiProperty({
+      example: true,
+      description: 'Indica si el usuario está activo en el sistema',
+    })
+    @Column({ default: true })
+    isActive: boolean;
 
   // ✅ Un proveedor puede tener muchos registros de productos que ha suministrado
   @OneToMany(() => SupplierProduct, (sp) => sp.supplier)

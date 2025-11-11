@@ -7,10 +7,11 @@ import { IsEmail,
   IsDateString, 
   IsString,
   IsPostalCode,
-  IsEnum
+  IsEnum,
  } from 'class-validator';
 import { PasswordOrClerkId } from 'src/common/validators/password-or-clerkId.validator';
 import { Role } from '../entities/role.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum Gender {
   Male = 'male',
@@ -19,9 +20,17 @@ export enum Gender {
 }
 
 export class CreateUserDto {
+   @ApiProperty({
+      description: 'Nombre',
+      example: 'Juan',
+    })
   @IsNotEmpty()
   firstname: string;
 
+  @ApiProperty({
+      description: 'Apellido',
+      example: 'Perez',
+    })  
   @IsNotEmpty()
   lastname: string;
   

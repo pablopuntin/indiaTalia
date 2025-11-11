@@ -9,5 +9,6 @@ import { InitialSeederCat } from 'src/common/seeds/seed.categories';
   imports: [TypeOrmModule.forFeature([Category])],
   controllers: [CategoriesController],
   providers: [CategoriesService, InitialSeederCat],
+   exports: [TypeOrmModule, CategoriesService],
 })
 export class CategoriesModule {}

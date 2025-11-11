@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from "typeorm";
 import { ProductsBase } from "src/products-base/entities/products-base.entity";
 // import { ProductImage } from "src/product-images/entities/product-image.entity"; // si la crearás después
+import { ApiProperty } from "@nestjs/swagger";
 
 @Entity({ name: 'productvariants' })
 export class ProductVariant {
@@ -27,6 +28,13 @@ export class ProductVariant {
     default: 'https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-pic-design-profile-vector-png-image_40966566.jpg',
   })
   imgURL: string;
+
+  @ApiProperty({
+      example: true,
+      description: 'Indica si el usuario está activo en el sistema',
+    })
+    @Column({ default: true })
+    isActive: boolean;
 
   // ✅ Muchas variantes pertenecen a un producto base
   @ManyToOne(() => ProductsBase, (productBase) => productBase.variants, { onDelete: 'CASCADE' })

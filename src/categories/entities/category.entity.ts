@@ -1,6 +1,6 @@
 //refactor
 import { ApiProperty } from "@nestjs/swagger";
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable} from "typeorm";
 import { Brand } from "src/brands/entities/brand.entity";
 
 @Entity({ name: 'categories' })
@@ -29,7 +29,19 @@ export class Category {
   })
   imgURL: string;
 
-  // ✅ 1 categoría tiene muchas marcas
-  @OneToMany(() => Brand, (brand) => brand.category)
+  @ApiProperty({
+    example: true,
+    description: 'Indica si el usuario está activo en el sistema',
+  })
+  @Column({ default: true })
+  isActive: boolean;
+
+   // 🔄 Muchas categorías pueden tener muchas marcas
+  @ManyToMany(() => Brand, (brand) => brand.categories)
+  @JoinTable({
+    name: 'category_brands', // Nombre de la tabla intermedia
+    joinColumn: { name: 'category_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'brand_id', referencedColumnName: 'id' },
+  })
   brands: Brand[];
 }
