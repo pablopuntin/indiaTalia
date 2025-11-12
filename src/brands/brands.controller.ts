@@ -1,34 +1,59 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { BrandsService } from './brands.service';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
+import { AuthSwagger } from 'src/auth/decorators/auth-swagger.decorator';
+import { ApiOperation } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { BrandsService } from './brands.service';
 
 @Controller('brands')
 export class BrandsController {
   constructor(private readonly brandsService: BrandsService) {}
 
-  @Post()
-  create(@Body() createBrandDto: CreateBrandDto) {
-    return this.brandsService.create(createBrandDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.brandsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.brandsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBrandDto: UpdateBrandDto) {
-    return this.brandsService.update(+id, updateBrandDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.brandsService.remove(+id);
-  }
+  @AuthSwagger()
+     @UseGuards(AuthGuard('jwt'), RolesGuard)
+     @Roles('superadmin,', 'admin')
+     @ApiOperation({ summary: 'Crear nuevas categorias' })
+   @Post()
+   create(@Body() createBrandDto: CreateBrandDto) {
+     return this.brandsService.create(createBrandDto);
+   }
+ 
+    @AuthSwagger()
+     @UseGuards(AuthGuard('jwt'), RolesGuard)
+     @Roles('superadmin', 'admin')
+     @ApiOperation({ summary: 'Mostrar todas las categorias' })
+   @Get()
+   findAll() {
+     return this.brandsService.findAll();
+   }
+ 
+    @AuthSwagger()
+     @UseGuards(AuthGuard('jwt'), RolesGuard)
+     @Roles('superadmin', 'admin')
+     @ApiOperation({ summary: 'Mostrar categorias por id' })
+   @Get(':id')
+   findOne(@Param('id', ParseUUIDPipe) id: string) {
+     return this.brandsService.findOne(+id);
+   }
+ 
+    @AuthSwagger()
+     @UseGuards(AuthGuard('jwt'), RolesGuard)
+     @Roles('superadmin', 'admin')
+     @ApiOperation({ summary: 'modificar marca' })
+   @Patch(':id')
+   update(@Param('id', ParseUUIDPipe) id: string, @Body() updateBrandDto: UpdateBrandDto) {
+     return this.brandsService.update(id, updateBrandDto);
+   }
+ 
+   @AuthSwagger()
+   @UseGuards(AuthGuard('jwt'), RolesGuard)
+   @Roles('superadmin')
+   @ApiOperation({ summary: 'eliminar categorias' })
+   @Delete(':id')
+   remove(@Param('id', ParseUUIDPipe) id: string) {
+     return this.brandsService.remove(id);
+   }
 }

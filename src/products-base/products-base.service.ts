@@ -16,11 +16,11 @@ export class ProductsBaseService {
     return `This action returns a #${id} productsBase`;
   }
 
-  update(id: number, updateProductsBaseDto: UpdateProductsBaseDto) {
+  update(id: string, updateProductsBaseDto: UpdateProductsBaseDto) {
     return `This action updates a #${id} productsBase`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} productsBase`;
   }
 }

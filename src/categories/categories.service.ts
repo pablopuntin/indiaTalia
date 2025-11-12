@@ -1,7 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { find } from 'rxjs';
 import { Category } from './entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,9 +11,31 @@ export class CategoriesService {
       @InjectRepository(Category)
       private readonly categoryRepository: Repository<Category>){}
 
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+      async create(createCategoryDto: CreateCategoryDto) {
+  const nameUpper = createCategoryDto.name.toUpperCase();
+  const descriptionUpper = createCategoryDto.description?.toUpperCase();
+
+  // Verificamos duplicados en categorías
+  const existing = await this.categoryRepository.findOne({
+    where: { name: nameUpper },
+  });
+  if (existing) {
+    throw new Error(`La categoría ${nameUpper} ya existe`);
   }
+
+  // Creamos nueva categoría
+  const newCategory = new Category();
+  newCategory.name = nameUpper;
+  if (descriptionUpper) {
+    newCategory.description = descriptionUpper;
+  }
+
+  await this.categoryRepository.save(newCategory);
+
+  return 'Categoría creada';
+}
+
+
 
   async findAll() {
     const categories = await this.categoryRepository.find();
@@ -43,37 +64,7 @@ export class CategoriesService {
      return category;
    }
 
-//   async remove(id: string) {
-//   const category = await this.categoryRepository.findOne({
-//     where: { id },
-//     relations: ['brands', 'brands.products', 'brands.products.variants'],
-//   });
 
-//   if (!category) throw new NotFoundException('Categoría no encontrada');
-
-//   // Desactivar la categoría
-//   category.isActive = false;
-//   await this.categoryRepository.save(category);
-
-//   // Desactivar solo los productos dentro de esa categoría
-//   for (const brand of category.brands) {
-//     for (const product of brand.productsBase) {
-//       // Si el producto pertenece a esta categoría, lo desactivamos
-//       if (productBase.category.id === category.id) {
-//         product.isActive = false;
-//         for (const variant of product.variants) {
-//           variant.isActive = false;
-//           await this.categoryRepository.manager.save(variant);
-//         }
-//         await this.categoryRepository.manager.save(product);
-//       }
-//     }
-//   }
-
-//   return { message: `Categoría ${category.name} desactivada` };
-// }
-
-//refactor
 async remove(id: string) {
   const category = await this.categoryRepository.findOne({
     where: { id },

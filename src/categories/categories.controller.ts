@@ -12,10 +12,10 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-   @AuthSwagger()
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('superadmin,', 'admin')
-    @ApiOperation({ summary: 'Crear nuevas categorias' })
+  @AuthSwagger()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('superadmin,', 'admin')
+  @ApiOperation({ summary: 'Crear nuevas categorias' })
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
