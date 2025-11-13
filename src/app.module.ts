@@ -17,6 +17,10 @@ import { PriceRulesModule } from './price-rules/price-rules.module';
 import { ReportsModule } from './reports/reports.module';
 
 
+import { OrdersModule } from './orders/orders.module';
+import { PaymentsModule } from './payments/payments.module';
+import { CashModule } from './cash/cash.module';
+import { ExpensesModule } from './expenses/expenses.module';
 @Module({
   imports: [
      ConfigModule.forRoot({ isGlobal: true }),
@@ -39,6 +43,10 @@ import { ReportsModule } from './reports/reports.module';
     PriceHistoryModule,
     PriceRulesModule,
     ReportsModule,
+    OrdersModule,
+    PaymentsModule,
+    CashModule,
+    ExpensesModule,
   ],
   controllers: [AppController],
 })

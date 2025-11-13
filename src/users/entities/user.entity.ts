@@ -4,11 +4,13 @@ import {
   Column, 
   ManyToMany, 
   JoinTable, 
-  BeforeInsert 
+  BeforeInsert ,
+  OneToMany
 } from 'typeorm';
 import { Role } from './role.entity';
 import { BadRequestException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
+import { Order } from '../../orders/entities/order.entity';
 
 @Entity('users')
 export class User {
@@ -83,6 +85,10 @@ export class User {
     inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
   })
   roles: Role[];
+
+  // ✅ Una marca tiene muchos productos base
+    @OneToMany(() => Order, (order) => order.user)
+    order: Order[];
 
   @BeforeInsert()
   validateAuthFields() {
