@@ -17,8 +17,8 @@ export class BrandsController {
      @Roles('superadmin,', 'admin')
      @ApiOperation({ summary: 'Crear nuevas categorias' })
    @Post()
-   create(@Body() createBrandDto: CreateBrandDto) {
-     return this.brandsService.create(createBrandDto);
+   createBrand(@Body() createBrandDto: CreateBrandDto) {
+     return this.brandsService.createBrand(createBrandDto);
    }
  
     @AuthSwagger()
@@ -26,8 +26,8 @@ export class BrandsController {
      @Roles('superadmin', 'admin')
      @ApiOperation({ summary: 'Mostrar todas las categorias' })
    @Get()
-   findAll() {
-     return this.brandsService.findAll();
+   findAllBrand() {
+     return this.brandsService.findAllBrand();
    }
  
     @AuthSwagger()
@@ -36,7 +36,7 @@ export class BrandsController {
      @ApiOperation({ summary: 'Mostrar categorias por id' })
    @Get(':id')
    findOne(@Param('id', ParseUUIDPipe) id: string) {
-     return this.brandsService.findOne(+id);
+     return this.brandsService.findOne(id);
    }
  
     @AuthSwagger()

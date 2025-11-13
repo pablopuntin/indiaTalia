@@ -36,7 +36,7 @@ export class CategoriesController {
     @ApiOperation({ summary: 'Mostrar categorias por id' })
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.categoriesService.findOne(+id);
+    return this.categoriesService.findOne(id);
   }
 
    @AuthSwagger()

@@ -263,10 +263,13 @@ src/
 
   suppliers/
     dto/
+      create-supplier-product.dto.ts
       create-supplier.dto.ts
       update-supplier.dto.ts
+      update-supplier-product.dto.ts
     entities/
       supplier.entity.ts
+      supplier-product.entity.ts
     suppliers.controller.ts
     suppliers.service.ts
     suppliers.module.ts

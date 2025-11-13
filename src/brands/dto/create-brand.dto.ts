@@ -1,6 +1,7 @@
 import { IsString, IsOptional, IsUrl } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
+
 export class CreateBrandDto {
    @ApiProperty({
       description: 'Nombre de la marca',
@@ -27,6 +28,12 @@ export class CreateBrandDto {
   @IsOptional()
   @IsUrl()
   imgURL: string;
+
+  //  @ApiProperty({ type: () => [CategoryDto] })
+  // categories: CategoryDto[];
+
+  // @ApiProperty({ type: () => [ProductsBaseDto] })
+  // productsBase: ProductsBaseDto[];
 }
 
 

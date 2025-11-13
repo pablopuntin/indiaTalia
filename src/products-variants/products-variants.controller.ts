@@ -1,34 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ProductsVariantsService } from './products-variants.service';
-import { CreateProductsVariantDto } from './dto/create-products-variant.dto';
-import { UpdateProductsVariantDto } from './dto/update-products-variant.dto';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
+import { ApiTags, ApiOperation } from "@nestjs/swagger";
+import { ProductsVariantsService } from "./products-variants.service";
+import { CreateProductVariantDto } from "./dto/create-products-variant.dto";
+import { UpdateProductsVariantDto } from "./dto/update-products-variant.dto";
 
-@Controller('products-variants')
+@ApiTags("Product Variants")
+@Controller("product-variants")
 export class ProductsVariantsController {
-  constructor(private readonly productsVariantsService: ProductsVariantsService) {}
+  constructor(private readonly variantsService: ProductsVariantsService) {}
 
   @Post()
-  create(@Body() createProductsVariantDto: CreateProductsVariantDto) {
-    return this.productsVariantsService.create(createProductsVariantDto);
+  @ApiOperation({ summary: "Crear una nueva variante de producto" })
+  create(@Body() dto: CreateProductVariantDto) {
+    return this.variantsService.create(dto);
   }
 
   @Get()
+  @ApiOperation({ summary: "Listar todas las variantes de productos" })
   findAll() {
-    return this.productsVariantsService.findAll();
+    return this.variantsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsVariantsService.findOne(+id);
+  @Get(":id")
+  @ApiOperation({ summary: "Obtener una variante por ID" })
+  findOne(@Param("id") id: string) {
+    return this.variantsService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductsVariantDto: UpdateProductsVariantDto) {
-    return this.productsVariantsService.update(+id, updateProductsVariantDto);
+  @Patch(":id")
+  @ApiOperation({ summary: "Actualizar una variante" })
+  update(@Param("id") id: string, @Body() dto: UpdateProductsVariantDto) {
+    return this.variantsService.update(id, dto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productsVariantsService.remove(+id);
+  @Delete(":id")
+  @ApiOperation({ summary: "Desactivar una variante (borrado lógico)" })
+  remove(@Param("id") id: string) {
+    return this.variantsService.remove(id)
   }
 }

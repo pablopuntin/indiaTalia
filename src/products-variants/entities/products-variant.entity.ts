@@ -1,7 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from "typeorm";
 import { ProductsBase } from "src/products-base/entities/products-base.entity";
-// import { ProductImage } from "src/product-images/entities/product-image.entity"; // si la crearás después
+import { ProductImage } from "src/product-image/entities/product-image.entity";
 import { ApiProperty } from "@nestjs/swagger";
+import { SupplierProduct } from "src/suppliers/entities/supplier-product.entity";
+import { StockMovement } from "src/stock/entities/stock.entity";
 
 @Entity({ name: 'productvariants' })
 export class ProductVariant {
@@ -40,8 +42,13 @@ export class ProductVariant {
   @ManyToOne(() => ProductsBase, (productBase) => productBase.variants, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'product_base_id' })
   productBase: ProductsBase;
+  
+  @OneToMany(() => SupplierProduct, (sp) => sp.variant)
+supplierProducts: SupplierProduct[];
+ 
+@OneToMany(() => ProductImage, (image) => image.variant, { cascade: true })
+images?: ProductImage[]; 
 
-  // ✅ Una variante podría tener varias imágenes (si decides manejar múltiples)
-  // @OneToMany(() => ProductImage, (image) => image.variant)
-  // images: ProductImage[];
+  @OneToMany(() => StockMovement, (movement) => movement.variant)
+stockMovements: StockMovement[];
 }

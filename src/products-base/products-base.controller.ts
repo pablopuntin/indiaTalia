@@ -8,7 +8,7 @@ import { CreateProductsBaseDto } from './dto/create-products-base.dto';
 import { ProductsBaseService } from './products-base.service';
 import { UpdateProductsBaseDto } from './dto/update-products-base.dto';
 
-@Controller('brands')
+@Controller('products-base')
 export class ProductsBaseController {
   constructor(private readonly productsBaseService: ProductsBaseService) {}
 

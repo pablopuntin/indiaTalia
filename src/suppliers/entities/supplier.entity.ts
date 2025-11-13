@@ -26,6 +26,10 @@ export class Supplier {
       example: true,
       description: 'Indica si el usuario está activo en el sistema',
     })
+
+    @Column({ type: 'varchar', length: 50, nullable: true })
+taxId?: string; // CUIT/RUT/NIF del proveedor
+
     @Column({ default: true })
     isActive: boolean;
 

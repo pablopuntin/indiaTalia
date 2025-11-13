@@ -47,8 +47,13 @@ export class CategoriesService {
   }));
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+ async findOne(id: string) {
+    const variant = await this.categoryRepository.findOne({
+      where: { id },
+      relations: ["productBase", "supplierProducts"],
+    });
+    if (!variant) throw new NotFoundException("Variante no encontrada");
+    return variant;
   }
 
    async update(id: string, updateCategoryDto: UpdateCategoryDto) {

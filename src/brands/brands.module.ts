@@ -9,5 +9,6 @@ import { InitialSeederBrand } from 'src/common/seeds/seed.brands';
    imports: [TypeOrmModule.forFeature([Brand])],
   controllers: [BrandsController],
   providers: [BrandsService, InitialSeederBrand],
+   exports: [BrandsService],
 })
 export class BrandsModule {}

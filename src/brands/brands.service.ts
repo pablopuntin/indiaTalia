@@ -1,34 +1,3 @@
-//import { BrandsService } from './brands.service';
-// import { Injectable } from '@nestjs/common';
-// import { CreateBrandDto } from './dto/create-brand.dto';
-// import { UpdateBrandDto } from './dto/update-brand.dto';
-
-// @Injectable()
-// export class BrandsService {
-//   create(createBrandDto: CreateBrandDto) {
-//     return 'This action adds a new brand';
-//   }
-
-//   findAll() {
-//     return `This action returns all brands`;
-//   }
-
-//   findOne(id: number) {
-//     return `This action returns a #${id} brand`;
-//   }
-
-//   update(id: number, updateBrandDto: UpdateBrandDto) {
-//     return `This action updates a #${id} brand`;
-//   }
-
-//   remove(id: number) {
-//     return `This action removes a #${id} brand`;
-//   }
-// }
-
-
-//Funciones del crud
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -44,22 +13,48 @@ export class BrandsService {
       @InjectRepository(Brand)
       private readonly brandRepository: Repository<Brand>) {}
 
-  create(createBrandDto: CreateBrandDto) {
-    return 'This action adds a new category';
-  }
+ async createBrand(createBrandDto: CreateBrandDto) {
+   const nameUpper = createBrandDto.name.toUpperCase();
+   const descriptionUpper = createBrandDto.description?.toUpperCase();
+ 
+   // Verificamos duplicados en categorías
+   const existing = await this.brandRepository.findOne({
+     where: { name: nameUpper },
+   });
+   if (existing) {
+     throw new Error(`La categoría ${nameUpper} ya existe`);
+   }
+ 
+   // Creamos nueva categoría
+   const newCategory = new Category();
+   newCategory.name = nameUpper;
+   if (descriptionUpper) {
+     newCategory.description = descriptionUpper;
+   }
+ 
+   await this.brandRepository.save(newCategory);
+ 
+   return 'Marca creada';
+ }
 
-  async findAll() {
-    const brand = await this.brandRepository.find();
-
-     return brand.map(brand => ({
-    id: brand.id,
-    name: brand.name,
-    description: brand.description,
+ async findAllBrand() {
+  const brands = await this.brandRepository.find();
+  
+  return brands.map(b => ({
+    id: b.id,
+    name: b.name,
+    description: b.description,
   }));
-  }
+}
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+
+  async findOne(id: string) {
+    const variant = await this.brandRepository.findOne({
+      where: { id },
+      relations: ["productBase", "supplierProducts"],
+    });
+    if (!variant) throw new NotFoundException("Variante no encontrada");
+    return variant;
   }
 
    async update(id: string, updateBrandDto: UpdateBrandDto) {

@@ -1,34 +1,57 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/common';
 import { SuppliersService } from './suppliers.service';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
+import { CreateSupplierProductDto } from './dto/create-supplier-product.dto';
+import { UpdateSupplierProductDto } from './dto/update-supplier-product.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Suppliers')
 @Controller('suppliers')
 export class SuppliersController {
   constructor(private readonly suppliersService: SuppliersService) {}
 
+  // === SUPPLIERS ===
+
   @Post()
-  create(@Body() createSupplierDto: CreateSupplierDto) {
-    return this.suppliersService.create(createSupplierDto);
+  createSupplier(@Body() dto: CreateSupplierDto) {
+    return this.suppliersService.createSupplier(dto);
   }
 
   @Get()
-  findAll() {
-    return this.suppliersService.findAll();
+  findAllSuppliers() {
+    return this.suppliersService.findAllSuppliers();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.suppliersService.findOne(+id);
+  findOneSupplier(@Param('id') id: string) {
+    return this.suppliersService.findOneSupplier(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSupplierDto: UpdateSupplierDto) {
-    return this.suppliersService.update(+id, updateSupplierDto);
+  updateSupplier(@Param('id') id: string, @Body() dto: UpdateSupplierDto) {
+    return this.suppliersService.updateSupplier(id, dto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.suppliersService.remove(+id);
+  removeSupplier(@Param('id') id: string) {
+    return this.suppliersService.removeSupplier(id);
+  }
+
+  // === SUPPLIER PRODUCTS ===
+
+  @Post('products')
+  addProductToSupplier(@Body() dto: CreateSupplierProductDto) {
+    return this.suppliersService.addProductToSupplier(dto);
+  }
+
+  @Patch('products/:id')
+  updateSupplierProduct(@Param('id') id: string, @Body() dto: UpdateSupplierProductDto) {
+    return this.suppliersService.updateSupplierProduct(id, dto);
+  }
+
+  @Delete('products/:id')
+  removeSupplierProduct(@Param('id') id: string) {
+    return this.suppliersService.removeSupplierProduct(id);
   }
 }
