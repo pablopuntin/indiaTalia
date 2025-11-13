@@ -15,7 +15,7 @@ export class ProductsBaseController {
   @AuthSwagger()
      @UseGuards(AuthGuard('jwt'), RolesGuard)
      @Roles('superadmin,', 'admin')
-     @ApiOperation({ summary: 'Crear nuevas categorias' })
+     @ApiOperation({ summary: 'Crear nuevos productos' })
    @Post()
    create(@Body() createProductsBaseDto: CreateProductsBaseDto) {
      return this.productsBaseService.create(createProductsBaseDto);
@@ -24,7 +24,7 @@ export class ProductsBaseController {
     @AuthSwagger()
      @UseGuards(AuthGuard('jwt'), RolesGuard)
      @Roles('superadmin', 'admin')
-     @ApiOperation({ summary: 'Mostrar todas las categorias' })
+     @ApiOperation({ summary: 'Mostrar todos los productos' })
    @Get()
    findAll() {
      return this.productsBaseService.findAll();
@@ -33,7 +33,7 @@ export class ProductsBaseController {
     @AuthSwagger()
      @UseGuards(AuthGuard('jwt'), RolesGuard)
      @Roles('superadmin', 'admin')
-     @ApiOperation({ summary: 'Mostrar categorias por id' })
+     @ApiOperation({ summary: 'Mostrar productos por id' })
    @Get(':id')
    findOne(@Param('id', ParseUUIDPipe) id: string) {
      return this.productsBaseService.findOne(+id);
@@ -42,7 +42,7 @@ export class ProductsBaseController {
     @AuthSwagger()
      @UseGuards(AuthGuard('jwt'), RolesGuard)
      @Roles('superadmin', 'admin')
-     @ApiOperation({ summary: 'modificar marca' })
+     @ApiOperation({ summary: 'modificar productos' })
    @Patch(':id')
    update(@Param('id', ParseUUIDPipe) id: string, @Body() updateProductsBaseDto: UpdateProductsBaseDto) {
      return this.productsBaseService.update(id, updateProductsBaseDto);
@@ -51,7 +51,7 @@ export class ProductsBaseController {
    @AuthSwagger()
    @UseGuards(AuthGuard('jwt'), RolesGuard)
    @Roles('superadmin')
-   @ApiOperation({ summary: 'eliminar categorias' })
+   @ApiOperation({ summary: 'eliminar productos' })
    @Delete(':id')
    remove(@Param('id', ParseUUIDPipe) id: string) {
      return this.productsBaseService.remove(id);

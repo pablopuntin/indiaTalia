@@ -25,6 +25,9 @@ export class ProductVariant {
   @Column({ type: 'varchar', length: 50, nullable: true })
   size?: string;
 
+  @Column({ type: 'int', default: 5 })
+minStock: number;
+
   @Column({
     type: 'text',
     default: 'https://png.pngtree.com/png-vector/20221125/ourmid/pngtree-no-image-available-icon-flatvector-illustration-pic-design-profile-vector-png-image_40966566.jpg',

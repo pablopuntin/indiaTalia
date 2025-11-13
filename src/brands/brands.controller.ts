@@ -15,7 +15,7 @@ export class BrandsController {
   @AuthSwagger()
      @UseGuards(AuthGuard('jwt'), RolesGuard)
      @Roles('superadmin,', 'admin')
-     @ApiOperation({ summary: 'Crear nuevas categorias' })
+     @ApiOperation({ summary: 'Crear nuevas marcas' })
    @Post()
    createBrand(@Body() createBrandDto: CreateBrandDto) {
      return this.brandsService.createBrand(createBrandDto);
@@ -24,7 +24,7 @@ export class BrandsController {
     @AuthSwagger()
      @UseGuards(AuthGuard('jwt'), RolesGuard)
      @Roles('superadmin', 'admin')
-     @ApiOperation({ summary: 'Mostrar todas las categorias' })
+     @ApiOperation({ summary: 'Mostrar todas las marcas' })
    @Get()
    findAllBrand() {
      return this.brandsService.findAllBrand();
@@ -33,7 +33,7 @@ export class BrandsController {
     @AuthSwagger()
      @UseGuards(AuthGuard('jwt'), RolesGuard)
      @Roles('superadmin', 'admin')
-     @ApiOperation({ summary: 'Mostrar categorias por id' })
+     @ApiOperation({ summary: 'Mostrar marcas por id' })
    @Get(':id')
    findOne(@Param('id', ParseUUIDPipe) id: string) {
      return this.brandsService.findOne(id);
@@ -51,7 +51,7 @@ export class BrandsController {
    @AuthSwagger()
    @UseGuards(AuthGuard('jwt'), RolesGuard)
    @Roles('superadmin')
-   @ApiOperation({ summary: 'eliminar categorias' })
+   @ApiOperation({ summary: 'eliminar marcas' })
    @Delete(':id')
    remove(@Param('id', ParseUUIDPipe) id: string) {
      return this.brandsService.remove(id);

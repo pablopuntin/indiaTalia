@@ -226,15 +226,17 @@ src/
   auth/
     decorators/
       roles.decorator.ts
-      user.decorator.ts
+      auth-swagger.decorator.ts
     dto/
       login.dto.ts
       register.dto.ts
-    guards/  
-    auth.controller.ts
-    auth.service.ts
-    auth.module.ts
-    jwt.strategy.ts
+    guards/
+    auth.guard.ts
+    roles.guard.ts  
+  auth.controller.ts
+  auth.service.ts
+  auth.module.ts
+  jwt.strategy.ts
 
   users/
     dto/
@@ -286,28 +288,25 @@ src/
 
   productsBase/
     dto/
-      create-product.dto.ts
-      update-product.dto.ts
+      create-products-base.dto.ts
+      update-products.base.dto.ts
     entities/
       product-base.entity.ts
-      product-variant.entity.ts
-      product-image.entity.ts
-    products.controller.ts
-    products.service.ts
-    products.module.ts
+    products-base.controller.ts
+    products-base.service.ts
+    products-base.module.ts
     
   productVariants/
       dto/
-        create-variant.dto.ts
-        update-variant.dto.ts
+        create-products-variant.dto.ts
+        update-products-variant.dto.ts
       entities/
-        product-variant.entity.ts      # o mantener solo aquí si prefieres separarlo
-        product-image.entity.ts
-      variants.service.ts
-      variants.controller.ts
-      variants.module.ts
+        products-variant.entity.ts      # o mantener solo aquí si prefieres separarlo
+      products-variants.service.ts
+      products-variants.controller.ts
+      products-variants.module.ts
 
-  cart/
+  cart/*
     dto/
       add-cart-item.dto.ts
       update-cart-item.dto.ts
@@ -318,7 +317,7 @@ src/
     cart.service.ts
     cart.module.ts
 
-  orders/
+  orders/*
     dto/
       create-order.dto.ts
       update-order.dto.ts
@@ -329,7 +328,7 @@ src/
     orders.service.ts
     orders.module.ts
 
-  payments/
+  payments/*
     dto/
       create-payment.dto.ts
       update-payment.dto.ts
@@ -339,7 +338,7 @@ src/
     payments.service.ts
     payments.module.ts
 
-  cash/
+  cash/*
     dto/
       create-cash-movement.dto.ts
       update-cash-movement.dto.ts
@@ -350,7 +349,7 @@ src/
     cash.service.ts
     cash.module.ts
 
-  expenses/
+  expenses/*
     dto/
       create-fixed-expense.dto.ts
       create-variable-expense.dto.ts
@@ -364,9 +363,11 @@ src/
 
   stock/
     dto/
-      create-stock-movement.dto.ts
+      create-stock.dto.ts
+      update-stock.dts.ts
     entities/
-      stock-movement.entity.ts
+      stock-alert.entity.ts
+      stock.entity.ts
     stock.controller.ts
     stock.service.ts
     stock.module.ts
@@ -383,12 +384,23 @@ src/
 
   price-history/
     dto/
-      create-price-change-history.dto.ts
+      create-price-history.dto.ts
+      update-price-history.dto.ts
     entities/
-      price-change-history.entity.ts
+      price-history.entity.ts
     price-history.controller.ts
     price-history.service.ts
     price-history.module.ts
+
+  product-image
+    dto/
+      create-product-image.dto.ts
+      update-product-image.dto.ts
+    entities
+      product-image.entity.ts
+    product-image.controller.ts
+    product-image.module.ts
+    product-image.service.ts    
 
   reports/
     dto/
@@ -398,23 +410,19 @@ src/
     reports.module.ts
 
   common/
-    dto/
-      pagination.dto.ts
-      filters.dto.ts
-    filters/
-      roles.guard.ts
-      auth.guard.ts
-    pipes/
-      validation.pipe.ts
-    utils/
-      helpers.ts
-    decorators/
-      roles.decorator.ts
-
-  config/
-    app.config.ts
-    database.config.ts
-
+    asset/
+      data-brands.json
+      data.json
+    config/
+      database.module.ts
+      typeorm.config.ts
+    seeds/
+      seed.brands.ts
+      seed.categories.ts
+      seed.superadmin.ts
+    validators/
+      passeord-or-clerck.validator.ts
+    
   main.ts
   app.module.ts
 
