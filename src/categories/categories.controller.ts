@@ -12,45 +12,45 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @AuthSwagger()
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('superadmin,', 'admin')
+  // @AuthSwagger()
+  // @UseGuards(AuthGuard('jwt'), RolesGuard)
+  // @Roles('superadmin,', 'admin')
   @ApiOperation({ summary: 'Crear nuevas categorias' })
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
 
-   @AuthSwagger()
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('superadmin', 'admin')
+  //  @AuthSwagger()
+  //   @UseGuards(AuthGuard('jwt'), RolesGuard)
+  //   @Roles('superadmin', 'admin')
     @ApiOperation({ summary: 'Mostrar todas las categorias' })
   @Get()
   findAll() {
     return this.categoriesService.findAll();
   }
 
-   @AuthSwagger()
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('superadmin', 'admin')
+  //  @AuthSwagger()
+  //   @UseGuards(AuthGuard('jwt'), RolesGuard)
+  //   @Roles('superadmin', 'admin')
     @ApiOperation({ summary: 'Mostrar categorias por id' })
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.categoriesService.findOne(id);
   }
 
-   @AuthSwagger()
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('superadmin')
+  //  @AuthSwagger()
+  //   @UseGuards(AuthGuard('jwt'), RolesGuard)
+  //   @Roles('superadmin')
     @ApiOperation({ summary: 'modificar categorias' })
   @Patch(':id')
   update(@Param('id', ParseUUIDPipe) id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoriesService.update(id, updateCategoryDto);
   }
 
-  @AuthSwagger()
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('superadmin')
+  // @AuthSwagger()
+  // @UseGuards(AuthGuard('jwt'), RolesGuard)
+  // @Roles('superadmin')
   @ApiOperation({ summary: 'eliminar categorias' })
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, Put, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -8,12 +8,17 @@ import { ApiOperation, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { ParseUUIDPipe } from '@nestjs/common';
+import { User } from './entities/user.entity';
+
 
 @ApiTags('Users') // 👈 Esto hace que Swagger la agrupe
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @AuthSwagger()
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('superadmin')
   @ApiOperation({summary: 'Crear usuarios'})
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -62,19 +67,23 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-   @AuthSwagger()
-    @UseGuards(AuthGuard('jwt'), RolesGuard)
-    @Roles('superadmin')
-    @ApiOperation({summary: 'Eliminar un usuario'})
-  @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.remove(id);
-  }
+  @AuthSwagger()
+@UseGuards(AuthGuard('jwt'))
+@ApiOperation({ summary: 'Eliminar un usuario' })
+@Delete(':id')
+remove(
+  @Param('id', ParseUUIDPipe) id: string,
+  @Req() req,
+) {
+  const currentUser = req.user; // viene del JWT
+  return this.usersService.remove(id, currentUser);
+}
+
 
 //hacer admin
    @AuthSwagger()
-@UseGuards(AuthGuard('jwt'), RolesGuard)
-@Roles('superadmin')
+@UseGuards(AuthGuard('jwt'))
+@Roles('superadmin', 'admin', 'user')
 @ApiOperation({ summary: 'Dar rol de administrador a un usuario' })
 @Put(':id/makeAdmin')
 makeAdmin(@Param('id', ParseUUIDPipe) id: string) {

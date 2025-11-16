@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { Role } from './entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import * as bcrypt from 'bcrypt'
 
 @Injectable()
 export class UsersService {
@@ -15,26 +16,38 @@ export class UsersService {
     private readonly roleRepository: Repository<Role>,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const { email, password, firstname, lastname, clerkId } = createUserDto;
+ 
+ async create(createUserDto: CreateUserDto) {
+  const { email, password, firstname, lastname, clerkId } = createUserDto;
 
-    const existing = await this.userRepository.findOne({ where: { email } });
-    if (existing) throw new BadRequestException('Email already exists');
+  const existing = await this.userRepository.findOne({ where: { email } });
+  if (existing) throw new BadRequestException('Email already exists');
 
-    const defaultRole = await this.roleRepository.findOne({ where: { name: 'user' } });
-    if (!defaultRole) throw new BadRequestException('Default role "user" not found');
+  const defaultRole = await this.roleRepository.findOne({ where: { name: 'user' } });
+  if (!defaultRole) throw new BadRequestException('Default role "user" not found');
 
-    const user = this.userRepository.create({
-      firstname,
-      lastname,
-      email,
-      password,
-      ...(clerkId && { clerkId }), // solo lo incluye si existe
-      roles: [defaultRole],
-    });
-
-    return this.userRepository.save(user);
+  // Si tiene password → hash
+  let hashedPassword: string | undefined = undefined;
+  if (password) {
+    hashedPassword = await bcrypt.hash(password, 10);
   }
+
+  const user = this.userRepository.create({
+    firstname,
+    lastname,
+    email,
+    password: hashedPassword,   // ✔ ahora sí lo guardamos hasheado
+    ...(clerkId && { clerkId }),
+    roles: [defaultRole],
+  });
+
+ const saved = await this.userRepository.save(user);
+
+  // 🔥 sólo devolvés lo que querés
+  const { id } = saved;
+  return { id, firstname, lastname };
+}
+
 
 
   async findByEmail(email: string) {
@@ -63,11 +76,61 @@ async update(id: string, updateUserDto: any) {
   return this.findOne(id);
 }
 
-async remove(id: string) {
-  const user = await this.findOne(id);
-  if (!user) throw new Error('User not found');
-  return this.userRepository.remove(user);
+// async remove(id: string) {
+//   const user = await this.findOne(id);
+//   if (!user) throw new Error('User not found');
+//   return this.userRepository.remove(user);
+// }
+
+//refactor soft deleted y solo uno puede eliminar su user
+async remove(id: string, currentUser: User) {
+  const user = await this.userRepository.findOne({
+    where: { id },
+    withDeleted: false,
+  });
+
+  if (!user) {
+    throw new BadRequestException('User not found');
+  }
+
+  const hasRole = (u: User, role: string) =>
+    u.roles.some(r => r.name === role);
+
+  const isSelf = currentUser.id === user.id;
+
+  const targetIsSuperadmin = hasRole(user, 'superadmin');
+  const targetIsAdmin = hasRole(user, 'admin');
+
+  const currentIsSuperadmin = hasRole(currentUser, 'superadmin');
+  const currentIsAdmin = hasRole(currentUser, 'admin');
+
+  // 🚫 1. Nadie puede eliminar a un superadmin
+  if (targetIsSuperadmin) {
+    throw new BadRequestException('Superadmins cannot be deleted');
+  }
+
+  // ✔️ 2. Un superadmin puede eliminar a cualquiera (excepto superadmin, ya bloqueado arriba)
+  if (currentIsSuperadmin) {
+    await this.userRepository.softDelete(id);
+    return { message: 'User deleted by superadmin', id };
+  }
+
+  // ✔️ 3. Un usuario puede eliminarse a sí mismo
+  if (isSelf) {
+    await this.userRepository.softDelete(id);
+    return { message: 'User deleted itself', id };
+  }
+
+  // ✔️ 4. Admin puede eliminar usuarios normales
+  // if (currentIsAdmin && !targetIsAdmin) {
+  //   await this.userRepository.softDelete(id);
+  //   return { message: 'User deleted by admin', id };
+  // }
+
+  // 🚫 5. Todo lo demás prohibido
+  throw new BadRequestException('Not allowed to delete this user');
 }
+
 
 async makeAdmin(id: string) {
     const user = await this.userRepository.findOne({

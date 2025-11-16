@@ -5,7 +5,8 @@ import {
   ManyToMany, 
   JoinTable, 
   BeforeInsert ,
-  OneToMany
+  OneToMany,
+  DeleteDateColumn
 } from 'typeorm';
 import { Role } from './role.entity';
 import { BadRequestException } from '@nestjs/common';
@@ -73,6 +74,9 @@ export class User {
   })
   @Column({ default: true })
   isActive: boolean;
+
+  @DeleteDateColumn({nullable: true})
+  deletedAt?: Date;
 
   @ApiProperty({
     type: () => [Role],
